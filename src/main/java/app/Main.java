@@ -33,5 +33,33 @@ public class Main {
         int ID = 311;
         studentRepo.findByID(ID).forEach(System.out::println);
 
+
+        // -----------------------------
+        // Порівняння stream vs parallelStream
+        // -----------------------------
+
+        String targetLastName = "Bondar";
+
+        long start1 = System.nanoTime();
+        long count1 = studentRepo.getAll()
+                .stream()
+                .filter(s -> s.getLastName().equals(targetLastName))
+                .count();
+        long timeStream = System.nanoTime() - start1;
+
+        long start2 = System.nanoTime();
+        long count2 = studentRepo.getAll()
+                .parallelStream()
+                .filter(s -> s.getLastName().equals(targetLastName))
+                .count();
+        long timeParallel = System.nanoTime() - start2;
+
+        System.out.println("Stream: " + count1 + ", time: " + timeStream);
+        System.out.println("Parallel stream: " + count2 + ", time: " + timeParallel);
+
+        if (timeStream < timeParallel)
+            System.out.println("Stream is faster");
+        else
+            System.out.println("Parallel stream is faster");
     }
 }
